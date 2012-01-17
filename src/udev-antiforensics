@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# If we're only dealing with a mouse jiggler, we can just lock the screen
+#
+# This could call something like the following:
+# Detect main user and their $DISPLAY, switch to their uid and lock the screen
+# eg:
+# /usr/bin/gnome-screensaver-command -l
+

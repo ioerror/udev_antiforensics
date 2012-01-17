@@ -1,0 +1,5 @@
+udev anti-forensics - udev rules and helpful programs to defend your system
+
+This project attempts to detect known sketchy hardware or suspect device
+changes and then it attempts to take action.
+

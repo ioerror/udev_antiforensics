@@ -1,0 +1,13 @@
+# For all HID and USB devices; keyboard, joystick, mouse, etc?
+# XXX: also check for hotpluggable pci, cardbus, pcmcia
+SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="usb", ACTION=="add", ATTR{bInterfaceClass}=="03", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="input", ACTION=="add", ENV{ID_CLASS}=="mouse", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="input", ACTION=="add", ENV{ID_CLASS}=="kbd", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="input", ACTION=="add", ENV{ID_CLASS}=="joystick", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="input", ACTION=="add", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="generic-usb", ACTION=="add", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="hidraw", ACTION=="add", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="ehci_hcd", ACTION=="add", RUN+="/usr/sbin/udev-antiforensics"
+SUBSYSTEM=="serio", ACTION=="add", DRIVERS=="psmouse", RUN+="/usr/sbin/udev-antiforensics"
+
