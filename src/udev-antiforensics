@@ -1,9 +1,112 @@
-#!/bin/bash
-#
-# If we're only dealing with a mouse jiggler, we can just lock the screen
-#
-# This could call something like the following:
-# Detect main user and their $DISPLAY, switch to their uid and lock the screen
-# eg:
-# /usr/bin/gnome-screensaver-command -l
+#!/usr/bin/env perl
+use strict;
+use Data::Dumper;
+use English;
+use Net::DBus;
 
+my $bus = Net::DBus->system;
+
+sub enum_sessions_consolekit {
+	my @sessions;
+
+	my $ck = $bus->get_service("org.freedesktop.ConsoleKit");
+	my $manager = $ck->get_object("/org/freedesktop/ConsoleKit/Manager");
+	my $cksessions = $manager->GetSessions();
+	for my $cksession_p (@$cksessions) {
+		my $cksession = $ck->get_object($cksession_p);
+		push @sessions, {uid => $cksession->GetUnixUser(),
+				display => $cksession->GetX11Display(),
+				tty => $cksession->GetDisplayDevice(),
+				lock_x11 => sub { $cksession->Lock() },};
+	}
+
+	return @sessions;
+}
+
+sub enum_sessions_systemd {
+	my @sessions;
+
+=skip
+	Net::DBus is outdated, crashes on 'u' in method signature.
+
+	my $ld = $bus->get_service("org.freedesktop.login1");
+	my $manager = $ld->get_object("/org/freedesktop/login1");
+	my $ldsessions = $manager->ListSessions();
+	for my $ldsession_a (@$sessions) {
+		my ($id, $uid, $user, $seat, $ldsession_p) = @$session_a;
+		my $ldsession = $ld->get_object($ldsession_p);
+		push @sessions, {uid => $uid,
+				display => $session->Get("org.freedesktop.login1.Session", "Display"),
+				tty => $session->Get("org.freedesktop.login1.Session", "TTY"),};
+	}
+
+	Screw "private data", parse the hell out of it.
+=cut
+	for my $file (glob("/run/systemd/sessions/*")) {
+		next if $file =~ /\.ref$/;
+		open(my $fh, "<", $file);
+		my %data = map {chomp; split(/=/, $_, 2)} grep {!/^#/} <$fh>;
+		close($fh);
+		push @sessions, {uid => int($data{UID}),
+				display => $data{DISPLAY},
+				tty => $data{TTY}};
+	}
+
+	return @sessions;
+}
+
+sub enum_sessions {
+	my @sessions;
+	if (defined $bus->get_service_owner("org.freedesktop.login1")) {
+		push @sessions, enum_sessions_systemd();
+	}
+	if (defined $bus->get_service_owner("org.freedesktop.ConsoleKit")) {
+		push @sessions, enum_sessions_consolekit();
+	}
+	return @sessions;
+}
+
+sub lock_gnome {
+	my ($uid, $display) = @_;
+	if (fork == 0) {
+		$UID = $EUID = $uid;
+		$ENV{DISPLAY} = $display;
+		exec("/usr/bin/gnome-screensaver-command", "-l") or die "$@";
+	}
+}
+
+sub lock_tty {
+	my ($uid, $tty) = @_;
+	my $ttyname = $tty;
+	$ttyname =~ s!^/dev/!!;
+	if (fork == 0) {
+		#$UID = $EUID = $uid;
+		# Ideally, we would run one of those "away" or "tty lock" programs, but ... meh.
+		exec("/usr/bin/pkill", "-9", "-t", $ttyname);
+	}
+}
+
+my @locked;
+
+for my $session (enum_sessions()) {
+	my $id = join(":", $session->{uid}, $session->{display}, $session->{tty});
+	next if $id ~~ @locked;
+
+	if ($session->{display}) {
+		print "trying to lock $session->{display} owned by $session->{uid}\n";
+		if ($session->{lock_x11}) {
+			$session->{lock_x11}->();
+		} else {
+			lock_gnome($session->{uid}, $session->{display});
+		}
+	} else {
+		print "trying to lock $session->{tty} owned by $session->{uid}\n";
+		if ($session->{lock_tty}) {
+			$session->{lock_tty}->();
+		} else {
+			lock_tty($session->{uid}, $session->{tty});
+		}
+	}
+
+	push @locked, $id;
+}
