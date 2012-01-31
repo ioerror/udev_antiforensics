@@ -1,0 +1,144 @@
+This covers two specific forensic hardware devices - the Mouse Jiggler MJ-1
+(Black; the so-called Slow Version) and the Mouse Jiggler MJ-2 (Blue; the
+so-called Fast Heartbeat).
+
+The MJ-1 registers as a USB HID device:
+
+[563108.723242] usb 1-1.1: new low speed USB device using ehci_hcd and address 19
+[563108.844619] input: Wiebetech LLC Wiebetech Mouse Jiggler̐3 as /devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.1/1-1.1:1.0/input/input25
+[563108.844775] generic-usb 0003:04B4:6370.0010: input,hidraw0: USB HID v1.00 Mouse [Wiebetech LLC Wiebetech Mouse Jiggler̐3] on usb-0000:00:1a.0-1.1/input0
+[563122.853953] usb 1-1.1: USB disconnect, address 19
+
+The MJ-2 registers as a USB HID device:
+
+[563407.215065] usb 1-1.1: new low speed USB device using ehci_hcd and address 21
+[563407.335698] input: Wiebetech LLC Wiebetech as /devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.1/1-1.1:1.0/input/input27
+[563407.335816] generic-usb 0003:04B4:6370.0012: input,hidraw0: USB HID v1.00 Mouse [Wiebetech LLC Wiebetech] on usb-0000:00:1a.0-1.1/input0
+[563446.585251] usb 1-1.1: USB disconnect, address 21
+
+Details for the MJ-1:
+
+Bus 001 Device 020: ID 04b4:6370 Cypress Semiconductor Corp. ViewMate Desktop
+Mouse CC2201
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x04b4 Cypress Semiconductor Corp.
+  idProduct          0x6370 ViewMate Desktop Mouse CC2201
+  bcdDevice            1.00
+  iManufacturer           1 Wiebetech LLC
+  iProduct                2 Wiebetech Mouse Jiggler?3
+  iSerial                 3 3022073
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           34
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          4 
+    bmAttributes         0x00
+      (Missing must-be-set bit!)
+      (Bus Powered)
+    MaxPower               26mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         3 Human Interface Device
+      bInterfaceSubClass      1 Boot Interface Subclass
+      bInterfaceProtocol      2 Mouse
+      iInterface              0 
+        HID Device Descriptor:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.00
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 Report
+          wDescriptorLength      50
+         Report Descriptors: 
+           ** UNAVAILABLE **
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0003  1x 3 bytes
+        bInterval              10
+Device Status:     0x0000
+  (Bus Powered)
+
+Details for the MJ-2:
+
+Bus 001 Device 021: ID 04b4:6370 Cypress Semiconductor Corp. ViewMate Desktop
+Mouse CC2201
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x04b4 Cypress Semiconductor Corp.
+  idProduct          0x6370 ViewMate Desktop Mouse CC2201
+  bcdDevice            1.00
+  iManufacturer           1 Wiebetech LLC
+  iProduct                2 Wiebetech 
+  iSerial                 3 4001198
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           34
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          4 HID-Compliant Mouse
+    bmAttributes         0x00
+      (Missing must-be-set bit!)
+      (Bus Powered)
+    MaxPower               26mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         3 Human Interface Device
+      bInterfaceSubClass      1 Boot Interface Subclass
+      bInterfaceProtocol      2 Mouse
+      iInterface              0 
+        HID Device Descriptor:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.00
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 Report
+          wDescriptorLength      50
+         Report Descriptors: 
+           ** UNAVAILABLE **
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0003  1x 3 bytes
+        bInterval              10
+Device Status:     0x0000
+  (Bus Powered)
+
