@@ -3,3 +3,5 @@ udev anti-forensics - udev rules and helpful programs to defend your system
 This project attempts to detect known sketchy hardware or suspect device
 changes and then it attempts to take action.
 
+This work has been integrated into systemd:
+http://cgit.freedesktop.org/systemd/systemd/commit/?id=7212a8a99ee863698f5feaa00abb4b99f3996a1a
